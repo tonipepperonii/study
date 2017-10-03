@@ -1,0 +1,13 @@
+Akteur
+
+In der Miniwelt gibt es genau einen Akteur, Nick den Nikolaus.
+Nick kann nach Norden, Westen, Süden oder Osten ausgerichtet sein.
+Er kann einen Schritt gehen, sich nach links drehen, ein Holz aufhaben und ein Holz ablegen.
+Nick kann auf einer beliebigen Kachel stehen, solange auf dieser keine Mauer platziert ist.
+Sein Ziel ist es, das Haus vom Nikolaus zu bauen. Dafür kann er Hölzer aufheben, transportieren und auf Kacheln bis zu 8 Hölzern ablegen, um sein Haus aufzubauen.
+
+Territorium
+
+Das Territorium ist eine gekachelte Ebene, deren Größe nicht explizit vorgegeben ist, die aber durch die Ränder begrenzt ist. 
+Eine Kachel kann entweder leer sein, durch eine Mauer für Nick blockiert oder 1-8 Hölzer enthalten, wobei 8 Hölzer ein fertiges Haus sind.
+Auf einer Kachel mit einer Mauer können sich weder Hölzer noch Nick selbst befinden.

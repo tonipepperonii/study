@@ -1,0 +1,26 @@
+#scrollPane .viewport {
+	-fx-background-image: url("c.jpg");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
+
+#territoryPanel {
+	-fx-effect: dropshadow(three-pass-box, black, 20, 0, 0, 5);
+}
+
+.tool-bar {
+	-fx-background-color: snow;
+}
+
+.menu-bar {
+	-fx-background-color: white;
+}
+
+.button, .toggle-button {
+	-fx-background-color: transparent;
+	-fx-background-radius: 0;
+}
+
+.toggle-button: selected, .button:hover, .toggle-button:hover {
+	-fx-background-color: gainsboro;
+}
