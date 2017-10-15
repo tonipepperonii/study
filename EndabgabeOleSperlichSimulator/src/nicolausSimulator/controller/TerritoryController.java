@@ -11,26 +11,28 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import nicolausSimulator.model.Territory;
+import nicolausSimulator.model.exceptions.DuKommstHierNichtVorbeiException;
+import nicolausSimulator.model.exceptions.HierLiegtKeinHolzMehrException;
+import nicolausSimulator.model.exceptions.NickHatKeinHolzMehrException;
+import nicolausSimulator.view.DeathSound;
 import nicolausSimulator.view.GUI;
 import nicolausSimulator.view.TerritoryPanel;
 
 public class TerritoryController extends Observable {
 	private Territory territory;
 	private TerritoryPanel tp;
-	private GuiController popUpShower;
+	private GuiController guiController;
 
 	private Image nickCursor;
 	private Image nopeCursor;
+	private DeathSound sound;
 
 	public TerritoryController(Territory territory, TerritoryPanel tp, GUI gui) {
 		this.territory = territory;
 		this.tp = tp;
-		nickCursor = new Image(getClass().getResource("/resources/Nick/2Nick32.png").toString());
-		nopeCursor = new Image(getClass().getResource("/resources/Delete24.gif").toString());
-	}
-
-	public void playButtonClicked() {
-		territory.getNick().main();
+		this.nickCursor = new Image(getClass().getResource("/resources/Nick/2Nick32.png").toString());
+		this.nopeCursor = new Image(getClass().getResource("/resources/Delete24.gif").toString());
+		this.sound = new DeathSound();
 	}
 
 	public void mapGeneratorClicked() {
@@ -44,15 +46,28 @@ public class TerritoryController extends Observable {
 	}
 
 	public void vorButtonClicked() {
-		territory.vor();
+		try {
+			territory.vor();
+		} catch (DuKommstHierNichtVorbeiException e) {
+			sound.play();
+		}
 	}
 
 	public void nimmButtonClicked() {
-		territory.nimm();
+		try {
+			territory.nimm();
+		} catch (HierLiegtKeinHolzMehrException e) {
+			sound.play();
+		}
+		
 	}
 
 	public void baueButtonClicked() {
-		territory.baue();
+		try {
+			territory.baue();
+		} catch (NickHatKeinHolzMehrException e) {
+			sound.play();
+		}
 	}
 
 	/**
@@ -69,12 +84,12 @@ public class TerritoryController extends Observable {
 			rowInt = Integer.parseInt(rowString);
 			colInt = Integer.parseInt(colString);
 			if (rowInt < 1 || colInt < 1) {
-				popUpShower.showWrongInputDialog();
+				guiController.showWrongInputDialog();
 			} else {
 				territory.generateNewField(rowInt, colInt);
 			}
 		} catch (NumberFormatException e) {
-			popUpShower.showWrongInputDialog();
+			guiController.showWrongInputDialog();
 		}
 
 	}

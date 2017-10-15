@@ -1,14 +1,13 @@
 package nicolausSimulator.view;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import nicolausSimulator.controller.simulation.SimulationManager;
 import nicolausSimulator.controller.simulation.SimulationState;
+import nicolausSimulator.utils.CustomObservable;
+import nicolausSimulator.utils.CustomObserver;
 
-public class SimulationButton extends Button implements Observer {
+public class SimulationButton extends Button implements CustomObserver {
 	public final static String STOP = "stop";
 	public final static String PLAY = "play";
 	public final static String PAUSE = "pause";
@@ -18,42 +17,42 @@ public class SimulationButton extends Button implements Observer {
 	public SimulationButton(String string, ImageView img, String buttonType) {
 		super(string, img);
 		this.buttonType = buttonType;
-		if (buttonType != PLAY) {
-			setDisabled(true);
+		if (this.buttonType != PLAY) {
+			this.setDisable(true);
 		}
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(CustomObservable o, Object arg) {
 		SimulationState simState = ((SimulationManager) o).getSimulationState();
 
 		switch (buttonType) {
 		case PLAY: {
 			if (simState == SimulationState.RUNNING) {
-				setDisabled(true);
+				setDisable(true);
 			} else {
-				setDisabled(false);
+				setDisable(false);
 			}
 			break;
 		}
 		case PAUSE: {
 			if (simState == SimulationState.RUNNING) {
-				setDisabled(false);
+				setDisable(false);
 			} else {
-				setDisabled(true);
+				setDisable(true);
 			}
 			break;
 		}
 		case STOP: {
 			if (simState == SimulationState.STOPPED) {
-				super.setDisabled(true);
+				super.setDisable(true);
 			} else {
-				super.setDisabled(false);
+				super.setDisable(false);
 			}
 			break;
 		}
 		}
-		System.out.println("SimulationButton.update - Button pressed");
+		System.out.println("SimulationButton.update - Button pressed, SimState: " + simState);
 
 	}
 

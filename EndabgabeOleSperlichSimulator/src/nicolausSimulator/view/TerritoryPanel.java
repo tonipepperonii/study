@@ -1,8 +1,6 @@
 package nicolausSimulator.view;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import com.sun.glass.ui.Application;
 
@@ -14,6 +12,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import nicolausSimulator.controller.PlacingState;
 import nicolausSimulator.model.Territory;
+import nicolausSimulator.utils.CustomObservable;
+import nicolausSimulator.utils.CustomObserver;
 
 /**
  * the graphic representation of the territory
@@ -21,7 +21,7 @@ import nicolausSimulator.model.Territory;
  * @author Ole Sperlich
  *
  */
-public class TerritoryPanel extends Region implements Observer {
+public class TerritoryPanel extends Region implements CustomObserver {
 	public static final int TILESIZE = 32;
 	private Territory territory;
 	private Canvas canvas;
@@ -99,15 +99,11 @@ public class TerritoryPanel extends Region implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
+	public void update(CustomObservable arg0, Object arg1) {
 		if(Application.isEventThread()) {
 			drawTerritory();
 		} else {
 			Platform.runLater(() -> drawTerritory());
-			try {
-				Thread.sleep(10); //Observable und Observer so implementieren, dass man reihenfolge der observer bestimmen kann
-			} catch (InterruptedException e) {
-			}
 		}
 		
 	}

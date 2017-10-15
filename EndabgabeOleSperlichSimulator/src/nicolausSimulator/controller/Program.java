@@ -4,6 +4,7 @@ import java.io.File;
 
 import javafx.stage.Stage;
 import nicolausSimulator.controller.simulation.SimulationManager;
+import nicolausSimulator.controller.simulation.SimulationThread;
 import nicolausSimulator.model.Territory;
 import nicolausSimulator.view.GUI;
 
@@ -16,7 +17,6 @@ public class Program {
 	private GUI gui;
 	private Stage stage;
 	private Territory territory;
-	private Compiling compiler;
 	private SimulationManager simulationManager;
 
 	public Program(String name, NicolausSimulator simulator) {
@@ -30,23 +30,20 @@ public class Program {
 	public void start() {
 		this.stage = new Stage();
 		this.territory = new Territory();
-		this.compiler = new Compiling();
 		this.simulationManager = new SimulationManager(territory);
-		this.gui = new GUI(stage, territory, simulator, this, compiler, simulationManager);
+		this.gui = new GUI(stage, territory, simulator, this, simulationManager);
 		gui.createGUI();
 	}
 
-	/**
-	 * delegate compile command to compiler
-	 */
-	public void beCompiled(boolean allowFailAlert) {
-		compiler.compile(territory, programName, allowFailAlert);
-	}
 	
 	/**
 	 * close the stage belonging to this program
 	 */
 	public void close() {
+		SimulationThread thread = simulationManager.getSimulationThread();
+		if(thread != null) {
+			thread.interrupt();
+		}
 		stage.close();
 	}
 	
@@ -77,6 +74,10 @@ public class Program {
 
 	public File getFile() {
 		return fileIfAlreadySaved;
+	}
+	
+	public Territory getTerritory() {
+		return this.territory;
 	}
 
 	/**

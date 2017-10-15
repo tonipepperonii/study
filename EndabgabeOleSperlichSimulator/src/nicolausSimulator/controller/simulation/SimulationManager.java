@@ -1,11 +1,10 @@
 package nicolausSimulator.controller.simulation;
 
-import java.util.Observable;
-
 import nicolausSimulator.model.Territory;
+import nicolausSimulator.utils.CustomObservable;
 
-public class SimulationManager extends Observable {
-	Simulation simulation;
+public class SimulationManager extends CustomObservable {
+	SimulationThread simulation;
 	Territory territory;
 	private SimulationState simState;
 	private int speed = 0;
@@ -21,7 +20,7 @@ public class SimulationManager extends Observable {
 		if (simState == SimulationState.STOPPED) {
 			simState = SimulationState.RUNNING;
 
-			simulation = new Simulation(territory, this);
+			simulation = new SimulationThread(territory, this);
 			simulation.start();
 		} else {
 			simulation.resumeSimulation();
@@ -60,9 +59,11 @@ public class SimulationManager extends Observable {
 	
 	public void setSimulationState(SimulationState state) {
 		this.simState = state;
+		setChanged();
+		notifyObservers();
 	}
 	
-	public Simulation getSimulationThread() {
+	public SimulationThread getSimulationThread() {
 		return this.simulation;
 	}
 }

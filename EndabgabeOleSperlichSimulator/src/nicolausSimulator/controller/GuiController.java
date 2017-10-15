@@ -16,7 +16,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Toggle;
@@ -115,8 +114,9 @@ public class GuiController {
 		fileChooser.getExtensionFilters().add(extFilter);
 
 		File file = fileChooser.showOpenDialog(gui.getStage());
-		simulator.openProgram(file);
-
+		if(file != null) {
+			simulator.openProgram(file);
+		}
 	}
 
 	public File showSaveDialog() {
@@ -163,7 +163,10 @@ public class GuiController {
 		fileChooser.setInitialFileName(program.getName() + ".ter");
 
 		File file = fileChooser.showSaveDialog(gui.getStage());
-		territoryController.serializeTerritory(territory, file);
+		if(file != null) {
+			territoryController.serializeTerritory(territory, file);
+		}
+		
 	}
 
 	public void showDeserializeDialog() {

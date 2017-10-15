@@ -38,7 +38,7 @@ public class NicolausSimulator extends Application {
 		Program program = new Program(nextName, this);
 		program.start();
 		openPrograms.add(program.getName());
-
+		
 	}
 
 	/**
@@ -73,8 +73,6 @@ public class NicolausSimulator extends Application {
 			program.setCode(readFile(file, program));
 			program.setFileAndSavedFlag(file);
 			openPrograms.add(program.getName());
-			boolean allowFailAlert = false;
-			program.beCompiled(allowFailAlert);
 			return true;
 		} else {
 			return false;
@@ -155,7 +153,7 @@ public class NicolausSimulator extends Application {
 	 * load program names from programs\ directory
 	 * @return
 	 */
-	private ArrayList<String> loadProgramNames() {
+	private static ArrayList<String> loadProgramNames() {
 		ArrayList<String> programNames = new ArrayList<String>();
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIRECTORY))) {
 			Path programsDir = Paths.get(DIRECTORY);
@@ -190,17 +188,13 @@ public class NicolausSimulator extends Application {
 		return name;
 	}
 
-	private String getPrefix(Program program) {
+	private static String getPrefix(Program program) {
 		return "public class " + program.getName() + " extends nicolausSimulator.model.Nicolaus {"
 				+ System.getProperty("line.separator") + "public ";
 	}
 
-	private String getPostfix() {
+	private static String getPostfix() {
 		return System.getProperty("line.separator") + "}";
 	}
 
-	public void compile(Program program) {
-		boolean allowFailAlert = true;
-		program.beCompiled(allowFailAlert);
-	}
 }

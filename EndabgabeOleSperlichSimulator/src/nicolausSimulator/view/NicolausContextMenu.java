@@ -3,12 +3,10 @@ package nicolausSimulator.view;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.media.AudioClip;
 import nicolausSimulator.model.Invisible;
 import nicolausSimulator.model.Nicolaus;
 import nicolausSimulator.model.Territory;
@@ -28,7 +26,7 @@ public class NicolausContextMenu extends ContextMenu {
 		this.nick = nick;
 		ArrayList<Method> methods = this.getMethods(territory.getNick());
 		for (Method method : methods) {
-			MenuItem item = new MenuItem(this.generateMethodName(method));
+			MenuItem item = new MenuItem(generateMethodName(method));
 			if (method.getParameterTypes().length == 0) {
 				item.setOnAction(e -> {
 					try {
@@ -37,9 +35,7 @@ public class NicolausContextMenu extends ContextMenu {
 					} catch (IllegalAccessException e1) {
 					} catch (IllegalArgumentException e1) {
 					} catch (InvocationTargetException e1) {
-						URL resource = getClass().getResource("/resources/death.wav");
-						AudioClip clip = new AudioClip(resource.toString());
-						clip.play(1.0);
+						new DeathSound().play();
 					}
 				});
 
@@ -56,7 +52,7 @@ public class NicolausContextMenu extends ContextMenu {
 	 * @param method
 	 * @return
 	 */
-	private String generateMethodName(Method method) {
+	private static String generateMethodName(Method method) {
 		StringBuilder methodName = new StringBuilder();
 		methodName.append(method.getReturnType().getName()).append(" ").append(method.getName()).append("(");
 		Class<?>[] params = method.getParameterTypes();

@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Observable;
 
 import nicolausSimulator.model.exceptions.DuKommstHierNichtVorbeiException;
 import nicolausSimulator.model.exceptions.HierLiegtKeinHolzMehrException;
 import nicolausSimulator.model.exceptions.NickHatKeinHolzMehrException;
+import nicolausSimulator.utils.CustomObservable;
 
-public class Territory extends Observable implements Serializable {
+public class Territory extends CustomObservable implements Serializable {
 	private final static long serialVersionUID = 5236211796831879530L;
 	
 	private final static int NORTH = 0;

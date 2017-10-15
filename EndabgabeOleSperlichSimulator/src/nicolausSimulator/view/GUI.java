@@ -61,9 +61,11 @@ public class GUI {
 		this.stage = stage;
 		this.simulator = simulator;
 		this.tp = new TerritoryPanel(territory);
-		this.editorController = new EditorController(program, simulator, guiController);
-		this.guiController = new GuiController(simulator, program, territory, territoryController, this, tp);
+
 		this.territoryController = new TerritoryController(territory, tp, this);
+		this.guiController = new GuiController(simulator, program, territory, territoryController, this, tp);
+		this.editorController = new EditorController(program, simulator, guiController, territory);
+
 		this.simulationManager = simManager;
 	}
 
@@ -71,8 +73,7 @@ public class GUI {
 		tp.getCanvas().setOnMousePressed(mouseEvent -> territoryController.handleMousePressed(mouseEvent));
 		tp.getCanvas().setOnMouseDragged(mouseEvent -> territoryController.handleMouseDragged(mouseEvent));
 		tp.getCanvas().setOnMouseClicked(mouseEvent -> territoryController.handleMouseReleased(mouseEvent));
-		tp.getCanvas().setOnContextMenuRequested(
-				contextMenuEvent -> guiController.showContextMenu(contextMenuEvent));
+		tp.getCanvas().setOnContextMenuRequested(contextMenuEvent -> guiController.showContextMenu(contextMenuEvent));
 		tp.setId("territoryPanel");
 
 		BorderPane root = new BorderPane();
@@ -104,7 +105,7 @@ public class GUI {
 		scrollPane.setId("scrollPane");
 
 		tp.drawTerritory();
-		
+
 		scrollPane.setContent(tp);
 		workspace.getItems().addAll(textEditor, scrollPane);
 
@@ -128,106 +129,105 @@ public class GUI {
 
 	private ToolBar createToolbar() {
 		Button newFileButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/icons/file.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/new2.png").toString())));
 		newFileButton.setTooltip(new Tooltip("Neue Datei"));
 		newFileButton.setOnAction(e -> guiController.showNewFileDialog());
-		
+
 		Button openFileButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/icons/folder.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/open2.png").toString())));
 		openFileButton.setTooltip(new Tooltip("Datei öffnen"));
 		openFileButton.setOnAction(e -> guiController.showOpenDialog());
-		
+
 		Button saveButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/icons/save.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/save2.png").toString())));
 		saveButton.setTooltip(new Tooltip("Datei speichern"));
 		saveButton.setOnAction(e -> editorController.handleSaveButtonPressed(editor));
-		
+
 		Button compileButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/icons/compile.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/compile2.png").toString())));
 		compileButton.setTooltip(new Tooltip("Code kompilieren"));
 		compileButton.setOnAction(e -> editorController.handleCompileButtonPressed(editor));
 
-		
 		toggleButtons = new ToggleGroup();
 		Button terrainButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/Terrain24.gif").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/changeSize.png").toString())));
 		terrainButton.setTooltip(new Tooltip("Welche Größe soll mein Terrain haben?"));
 		terrainButton.setOnAction(e -> guiController.showChangeSizeDialog());
-		
+
 		ToggleButton nickButton = new ToggleButton("",
-				new ImageView(new Image(getClass().getResource("/resources/Nick/Nick24.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/Nick/2Nick32.png").toString())));
 		nickButton.setId(PlacingState.NICK);
 		nickButton.setTooltip(new Tooltip("Hi, ich bin Nick"));
 		nickButton.setToggleGroup(toggleButtons);
 		nickButton.setOnAction(e -> guiController.selectToggleButton());
-		
+
 		ToggleButton woodButton = new ToggleButton("",
-				new ImageView(new Image(getClass().getResource("/resources/Nick/wood24.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/Nick/house1.png").toString())));
 		woodButton.setId(PlacingState.WOOD);
 		woodButton.setToggleGroup(toggleButtons);
 		woodButton.setOnAction(e -> guiController.selectToggleButton());
 		woodButton.setTooltip(new Tooltip("Lege Holz zum Sammeln für mich aus"));
-		
+
 		ToggleButton wallButton = new ToggleButton("",
-				new ImageView(new Image(getClass().getResource("/resources/Wall24.gif").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/Wall32.png").toString())));
 		wallButton.setId(PlacingState.WALL);
 		wallButton.setToggleGroup(toggleButtons);
 		wallButton.setOnAction(e -> guiController.selectToggleButton());
 		wallButton.setTooltip(new Tooltip("Stelle mir Wände in den Weg, wenn du was gegen mich hast"));
-		
+
 		ToggleButton deleteButton = new ToggleButton("",
 				new ImageView(new Image(getClass().getResource("/resources/Delete24.gif").toString())));
 		deleteButton.setId(PlacingState.DELETE);
 		deleteButton.setToggleGroup(toggleButtons);
 		deleteButton.setOnAction(e -> guiController.selectToggleButton());
 		deleteButton.setTooltip(new Tooltip("Lösche Gegenstände vom Terrain"));
-		
+
 		Button nickWithWoodButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/Nick/NickWithWood24.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/gift.png").toString())));
 		nickWithWoodButton.setTooltip(new Tooltip("Gib mir mehr Holz in die Hand"));
 		nickWithWoodButton.setOnAction(e -> guiController.showGiveMoreWoodDialog());
-		
+
 		Button nickLeftButton = new Button("",
 				new ImageView(new Image(getClass().getResource("/resources/Nick/turnLeft24.png").toString())));
 		nickLeftButton.setTooltip(new Tooltip("Drehe mich nach links"));
 		nickLeftButton.setOnAction(e -> territoryController.linksUmButtonClicked());
-		
+
 		Button nickMoveButton = new Button("",
 				new ImageView(new Image(getClass().getResource("/resources/Nick/move24.png").toString())));
 		nickMoveButton.setTooltip(new Tooltip("Lass mich einen Schritt gehen"));
 		nickMoveButton.setOnAction(e -> territoryController.vorButtonClicked());
-		
+
 		Button nickPickButton = new Button("",
 				new ImageView(new Image(getClass().getResource("/resources/Nick/pick24.png").toString())));
 		nickPickButton.setTooltip(new Tooltip("Lass mich ein Stück Holz aufheben"));
 		nickPickButton.setOnAction(e -> territoryController.nimmButtonClicked());
-		
+
 		Button nickPutButton = new Button("",
 				new ImageView(new Image(getClass().getResource("/resources/Nick/put24.png").toString())));
 		nickPutButton.setTooltip(new Tooltip("Lass mich mein Haus (weiter)bauen"));
 		nickPutButton.setOnAction(e -> territoryController.baueButtonClicked());
-		
+
 		Button generateNewFieldButton = new Button("",
-				new ImageView(new Image(getClass().getResource("/resources/NewTerritory24.png").toString())));
+				new ImageView(new Image(getClass().getResource("/resources/icons/generate2.png").toString())));
 		generateNewFieldButton.setTooltip(new Tooltip("Generiere ein neues Territorium"));
 		generateNewFieldButton.setOnAction(e -> territoryController.mapGeneratorClicked());
 
 		SimulationButton playButton = new SimulationButton("",
-				new ImageView(new Image(getClass().getResource("/resources/Play24.gif").toString())), 
+				new ImageView(new Image(getClass().getResource("/resources/icons/play.png").toString())),
 				SimulationButton.PLAY);
 		simulationManager.addObserver(playButton);
 		playButton.setTooltip(new Tooltip("Play"));
 		playButton.setOnAction(e -> simulationManager.handlePlayButtonPressed());
 
 		SimulationButton pauseButton = new SimulationButton("",
-				new ImageView(new Image(getClass().getResource("/resources/Pause24.gif").toString())),
+				new ImageView(new Image(getClass().getResource("/resources/icons/pause.png").toString())),
 				SimulationButton.PAUSE);
 		simulationManager.addObserver(pauseButton);
 		pauseButton.setTooltip(new Tooltip("Pause"));
 		pauseButton.setOnAction(e -> simulationManager.handlePauseButtonPressed());
 
 		SimulationButton stopButton = new SimulationButton("",
-				new ImageView(new Image(getClass().getResource("/resources/Stop24.gif").toString())), 
+				new ImageView(new Image(getClass().getResource("/resources/icons/stop.png").toString())),
 				SimulationButton.STOP);
 		simulationManager.addObserver(stopButton);
 		stopButton.setTooltip(new Tooltip("Stop"));
@@ -236,8 +236,8 @@ public class GUI {
 		Slider simulationSlider = new Slider();
 		simulationSlider.setMin(1);
 		simulationSlider.setMax(100);
-		simulationSlider.valueProperty()
-				.addListener((observable, oldValue, newValue) -> simulationManager.setSimulationSpeed(newValue.intValue()));
+		simulationSlider.valueProperty().addListener(
+				(observable, oldValue, newValue) -> simulationManager.setSimulationSpeed(newValue.intValue()));
 
 		ToolBar toolBar = new ToolBar(newFileButton, openFileButton, saveButton, compileButton, new Separator(),
 				terrainButton, generateNewFieldButton, new Separator(), nickButton, woodButton, wallButton,
@@ -261,21 +261,25 @@ public class GUI {
 
 	private Menu createFileMenu() {
 		Menu fileMenu = new Menu("_Editor");
+
 		MenuItem newMenuItem = new MenuItem("_Neu");
 		newMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + N"));
 		newMenuItem.setGraphic(new ImageView(new Image(getClass().getResource("/resources/New16.gif").toString())));
+		newMenuItem.setOnAction(e -> guiController.showNewFileDialog());
+
 		MenuItem openMenuItem = new MenuItem("_Öffnen");
 		openMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + O"));
 		openMenuItem.setGraphic(new ImageView(new Image(getClass().getResource("/resources/Open16.gif").toString())));
+		openMenuItem.setOnAction(e -> guiController.showOpenDialog());
+
 		MenuItem compileMenuItem = new MenuItem("_Kompilieren");
 		compileMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + K"));
-		MenuItem printMenuItem = new MenuItem("_Drucken");
-		printMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + P"));
-		printMenuItem.setGraphic(new ImageView(new Image(getClass().getResource("/resources/Print16.gif").toString())));
+
 		MenuItem quitMenuItem = new MenuItem("_Beenden");
 		quitMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + Q"));
 		quitMenuItem.setOnAction(e -> closeProgram());
-		fileMenu.getItems().addAll(newMenuItem, openMenuItem, new SeparatorMenuItem(), compileMenuItem, printMenuItem,
+
+		fileMenu.getItems().addAll(newMenuItem, openMenuItem, new SeparatorMenuItem(), compileMenuItem,
 				new SeparatorMenuItem(), quitMenuItem);
 		return fileMenu;
 	}
@@ -284,20 +288,18 @@ public class GUI {
 		Menu territoryMenu = new Menu("_Territorium");
 
 		Menu safeSubmenur = new Menu("_Speichern");
-		MenuItem xmlMenuItem = new MenuItem("_XML");
-		MenuItem jaxbMenuItem = new MenuItem("_JAXB");
 		MenuItem serializeMenuItem = new MenuItem("_Serialisieren");
-		safeSubmenur.getItems().addAll(xmlMenuItem, jaxbMenuItem, serializeMenuItem);
 		serializeMenuItem.setOnAction(e -> guiController.showSerializeDialog());
+		safeSubmenur.getItems().addAll(serializeMenuItem);
 
 		Menu loadSubmenu = new Menu("_Laden");
 		MenuItem deserializeMenuItem = new MenuItem("_Deserialisieren");
 		deserializeMenuItem.setOnAction(e -> guiController.showDeserializeDialog());
 		loadSubmenu.getItems().add(deserializeMenuItem);
-		
-		Menu safeAsPictureSubmenu = new Menu("Als _Bild speichern");
-		MenuItem printSubMenuItem = new MenuItem("_Drucken");
+
 		MenuItem changeSizeMenuItem = new MenuItem("_Größe ändern");
+		changeSizeMenuItem.setOnAction(e -> guiController.showChangeSizeDialog());
+
 		toggleMenuItems = new ToggleGroup();
 		RadioMenuItem placeProtagonistMenuItem = new RadioMenuItem("_Nick platzieren");
 		placeProtagonistMenuItem.setId(PlacingState.NICK);
@@ -315,24 +317,34 @@ public class GUI {
 		deleteCellMenuItem.setId(PlacingState.DELETE);
 		deleteCellMenuItem.setToggleGroup(toggleMenuItems);
 		deleteCellMenuItem.setOnAction(e -> guiController.selectToggleMenuItem());
-		territoryMenu.getItems().addAll(safeSubmenur, loadSubmenu, safeAsPictureSubmenu, printSubMenuItem,
-				changeSizeMenuItem, new SeparatorMenuItem(), placeProtagonistMenuItem, placeWoodMenuItem,
-				placeWallMenuItem, deleteCellMenuItem);
+		territoryMenu.getItems().addAll(safeSubmenur, loadSubmenu, changeSizeMenuItem, new SeparatorMenuItem(),
+				placeProtagonistMenuItem, placeWoodMenuItem, placeWallMenuItem, deleteCellMenuItem);
 		return territoryMenu;
 	}
 
-	private static Menu createNicolausMenu() {
+	private Menu createNicolausMenu() {
 		Menu nicolausMenu = new Menu("_Nikolaus");
+		
 		MenuItem woodInHandMenuItem = new MenuItem("_Hölzer im Besitz...");
+		
 		MenuItem turnLeftMenuItem = new MenuItem("links _drehen");
 		turnLeftMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + SHIFT + L"));
+		turnLeftMenuItem.setOnAction(e -> territoryController.linksUmButtonClicked());
+		
 		MenuItem goMenuItem = new MenuItem("_vor");
 		goMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + SHIFT + V"));
+		goMenuItem.setOnAction(e -> territoryController.vorButtonClicked());
+		
 		MenuItem takeMenuItem = new MenuItem("_nimm");
 		takeMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + SHIFT + N"));
-		MenuItem giveMenuItem = new MenuItem("_gib");
-		giveMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + SHIFT + G"));
-		nicolausMenu.getItems().setAll(woodInHandMenuItem, turnLeftMenuItem, goMenuItem, takeMenuItem, giveMenuItem);
+		takeMenuItem.setOnAction(e -> territoryController.nimmButtonClicked());
+		
+		MenuItem buildMenuItem = new MenuItem("_baue");
+		buildMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + SHIFT + G"));
+		buildMenuItem.setOnAction(e -> territoryController.baueButtonClicked());
+		
+		
+		nicolausMenu.getItems().setAll(woodInHandMenuItem, turnLeftMenuItem, goMenuItem, takeMenuItem, buildMenuItem);
 		return nicolausMenu;
 	}
 
@@ -341,11 +353,14 @@ public class GUI {
 		MenuItem startMenuItem = new MenuItem("Start/_Fortsetzen");
 		startMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + F11"));
 		startMenuItem.setGraphic(new ImageView(new Image(getClass().getResource("/resources/Play16.gif").toString())));
+		
 		MenuItem pauseMenuItem = new MenuItem("_Pause");
 		pauseMenuItem.setGraphic(new ImageView(new Image(getClass().getResource("/resources/Pause16.gif").toString())));
+		
 		MenuItem stopMenuItem = new MenuItem("_Stopp");
 		stopMenuItem.setGraphic(new ImageView(new Image(getClass().getResource("/resources/Stop16.gif").toString())));
 		stopMenuItem.setAccelerator(KeyCombination.keyCombination("SHORTCUT + F12"));
+		
 		simulationMenu.getItems().setAll(startMenuItem, pauseMenuItem, stopMenuItem);
 		return simulationMenu;
 	}
@@ -359,7 +374,7 @@ public class GUI {
 		}
 		simulator.closeProgram(program);
 	}
-	
+
 	public void refreshTitle() {
 		this.stage.setTitle(TITLE_PREFIX + program.getName());
 	}
@@ -375,7 +390,7 @@ public class GUI {
 	public void setEditorsText(String text) {
 		editor.setText(text);
 	}
-	
+
 	public Stage getStage() {
 		return this.stage;
 	}
